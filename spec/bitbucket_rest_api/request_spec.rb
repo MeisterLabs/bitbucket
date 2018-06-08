@@ -2,7 +2,7 @@ require 'spec_helper'
 require 'bitbucket_rest_api/request'
 
 describe BitBucket::Request do
-  let(:fake_api) { (Class.new { include BitBucket::Request })}
+  let(:fake_api) { BitBucket::API }
   let(:faraday_connection) { Faraday.new(:url => 'https://api.bitbucket.org') }
 
   describe "request" do
@@ -12,8 +12,8 @@ describe BitBucket::Request do
 
     context "with a connection" do
       before do
-        (fake_api).any_instance.stubs(:connection).returns(faraday_connection)
-        (fake_api).any_instance.stubs(:new_access_token).returns("12345")
+        allow_any_instance_of(fake_api).to receive(:connection).and_return(faraday_connection)
+        allow_any_instance_of(fake_api).to receive(:new_access_token).and_return("12345")
       end
 
       it "supports get" do
@@ -22,7 +22,7 @@ describe BitBucket::Request do
           'Accept' => '*/*',
           'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
           'Authorization' => 'Bearer 12345',
-          'User-Agent' => 'Faraday v0.9.2'
+          'User-Agent' => 'Faraday v0.15.2'
           })
 
         fake_api.new.request(:get, '/1.0/endpoint', {}, {})
@@ -35,7 +35,7 @@ describe BitBucket::Request do
             'Accept' => '*/*',
             'Content-Type'=>'application/x-www-form-urlencoded',
             'Authorization' => 'Bearer 12345',
-            'User-Agent' => 'Faraday v0.9.2'
+            'User-Agent' => 'Faraday v0.15.2'
           })
 
         fake_api.new.request(:put, '/1.0/endpoint', { 'data' => { 'key' => 'value'} }, {})
@@ -48,7 +48,7 @@ describe BitBucket::Request do
             'Accept' => '*/*',
             'Content-Type'=>'application/x-www-form-urlencoded',
             'Authorization' => 'Bearer 12345',
-            'User-Agent' => 'Faraday v0.9.2'
+            'User-Agent' => 'Faraday v0.15.2'
           })
 
         fake_api.new.request(:patch, '/1.0/endpoint', { 'data' => { 'key' => 'value'} }, {})
@@ -59,7 +59,7 @@ describe BitBucket::Request do
          with(:headers => {
           'Accept' => '*/*',
           'Authorization' => 'Bearer 12345',
-          'User-Agent' => 'Faraday v0.9.2'
+          'User-Agent' => 'Faraday v0.15.2'
           })
         fake_api.new.request(:delete, '/1.0/endpoint', {}, {})
       end
@@ -71,7 +71,7 @@ describe BitBucket::Request do
             'Accept' => '*/*',
             'Content-Type'=>'application/x-www-form-urlencoded',
             'Authorization' => 'Bearer 12345',
-            'User-Agent' => 'Faraday v0.9.2'
+            'User-Agent' => 'Faraday v0.15.2'
           })
 
         fake_api.new.request(:post, '/1.0/endpoint', { 'data' => { 'key' => 'value'} }, {})
